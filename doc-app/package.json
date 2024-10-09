@@ -1,0 +1,22 @@
+{
+  "name": "simple-nodejs-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcchua/simple-nodejs-app.git"
+  },
+  "author": "lcchua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lcchua/simple-nodejs-app/issues"
+  },
+  "homepage": "https://github.com/lcchua/simple-nodejs-app#readme",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
