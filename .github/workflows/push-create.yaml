@@ -57,5 +57,5 @@ jobs:
       - name: Wait for 10min
         run: sleep 600
 
-      - name: Terraform Destroy
+      - name: Terraform Destroy -var-file="./${{ github.event.inputs.env_select }}.tfvars"
         run: terraform destroy -no-color -auto-approve
