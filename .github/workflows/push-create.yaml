@@ -1,5 +1,5 @@
-name: Terraform Apply & Destroy
-run-name: Running Terraform Apply & Destroy by ${{ github.actor }}
+name: Terraform Apply
+run-name: Running Terraform Apply by ${{ github.actor }}
 
 on:
   push:
@@ -20,11 +20,13 @@ on:
           - prod
 
 jobs:
-  Terraform-Create-And-Destroy:
+  Terraform-Apply:
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ job.status }}
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: terraform
 
     steps:
       - name: Checkout
@@ -43,19 +45,38 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan -no-color -input=false -var-file="./${{ github.event.inputs.env_select }}.tfvars" -out="terraform_out"
+      #- name: Terraform Plan
+      #run: terraform plan -no-color -input=false -var-file="./${{ github.event.inputs.env_select }}.tfvars" -out="terraform_out"
 
       - name: Terraform Apply
-        run: terraform apply -no-color -auto-approve "terraform_out"
+        #run: terraform apply -no-color -auto-approve "terraform_out"
+        run: terraform apply -no-color -auto-approve -var-file="./${{ github.event.inputs.env_select }}.tfvars"
 
       - name: Export terraform outputs
         id: tfout
         run: |
           terraform output
 
-      - name: Wait for 10min
-        run: sleep 600
+      #- name: Wait for 5min
+      #  run: sleep 300
 
-      - name: Terraform Destroy
-        run: terraform destroy -no-color -auto-approve -var-file="./${{ github.event.inputs.env_select }}.tfvars"
+      #- name: Terraform Destroy
+      #  run: terraform destroy -no-color -auto-approve
+
+  Summary:
+    needs: [Terraform-Apply]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Adding markdown
+        run: |
+          TF_STATUS=${{ needs.Terraform-Apply.outputs.status }}
+
+          echo '## 🚀 Preparing Build Summary 🚀' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+
+          echo "| Job Name        | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| tf-apply        | $TF_STATUS |" >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+
+          echo '## Job ran by: ${{ github.actor }}' >> $GITHUB_STEP_SUMMARY
