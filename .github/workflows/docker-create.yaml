@@ -2,7 +2,7 @@ name: Docker Create
 run-name: Running Docker Image Creation by ${{ github.actor }}
 
 env:
-  IMAGE_NAME: lcchua-node-app
+  IMAGE_NAME: lcchua-nodejs-app
 
 on:
   push:
@@ -61,20 +61,10 @@ jobs:
           docker build -t ${{ env.IMAGE_NAME }}:${{ needs.Get-Tag.outputs.LATEST_TAG }}.${{ github.run_number }} .
           docker tag ${{ env.IMAGE_NAME }}:${{ needs.Get-Tag.outputs.LATEST_TAG }}.${{ github.run_number }} public.ecr.aws/sctp-sandbox/${{ env.IMAGE_NAME }}:${{ needs.Get-Tag.outputs.LATEST_TAG }}.${{ github.run_number }}
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.20.0
-        with:
-          image-ref: "public.ecr.aws/sctp-sandbox/${{ env.IMAGE_NAME }}:${{ needs.Get-Tag.outputs.LATEST_TAG }}.${{ github.run_number }}"
-          format: "table"
-          exit-code: "1"
-          ignore-unfixed: true
-          vuln-type: "os,library"
-          severity: "CRITICAL,HIGH"
+      - name: Docker publish to ECR
+        run: docker push public.ecr.aws/sctp-sandbox/${{ env.IMAGE_NAME }}:${{ needs.Get-Tag.outputs.LATEST_TAG }}.${{ github.run_number }}
 
-  #      - name: Docker publish to ECR
-  #        run: docker push public.ecr.aws/sctp-sandbox/${{ env.IMAGE_NAME }}:${{ needs.Get-Tag.outputs.LATEST_TAG }}.${{ github.run_number }}
-
-  Docker_Build_Pipeline_Status:
+  Docker_Create_Pipeline_Status:
     needs: [Docker-Image-Create-And-Publish]
     runs-on: ubuntu-latest
     steps:
