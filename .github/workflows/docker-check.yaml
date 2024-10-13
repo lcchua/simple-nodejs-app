@@ -2,7 +2,7 @@ name: Docker Checks
 run-name: Running Docker Image Checks by ${{ github.actor }}
 
 env:
-  IMAGE_NAME: lcchua-nodejs-app
+  IMAGE_NAME: lcchua-hello-app
 
 on:
   pull_request:
