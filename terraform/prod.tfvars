@@ -1,2 +1,2 @@
 env    = "prod"
-rnd_id = "ghi"
+rnd_id = "pqr"

@@ -1,2 +1,2 @@
 env    = "dev"
-rnd_id = "abc"
+rnd_id = "jkl"

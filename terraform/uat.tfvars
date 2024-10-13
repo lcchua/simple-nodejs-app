@@ -1,2 +1,2 @@
 env    = "uat"
-rnd_id = "def"
+rnd_id = "mno"
