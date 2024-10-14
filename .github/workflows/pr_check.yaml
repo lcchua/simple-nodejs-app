@@ -48,7 +48,7 @@ jobs:
       - name: Run TFLint
         run: tflint -f compact
 
-  Summary:
+  Terraform_Checks_Status_Summary:
     needs: [Terraform-Checks]
     runs-on: ubuntu-latest
     steps:

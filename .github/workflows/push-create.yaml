@@ -59,20 +59,12 @@ jobs:
         run: |
           terraform workspace select "${{ env.ENV_VAR }}" 2>/dev/null || terraform workspace new "${{ env.ENV_VAR }}"
           terraform workspace list
-      #- name: Terraform workspace new environment and select
-      #  run: |
-      #    terraform workspace select ${{ github.event.inputs.env_select }} 2>/dev/null|| terraform workspace new ${{ github.event.inputs.env_select }}
-      #    terraform workspace list
 
       - name: Terraform Plan
         run: terraform plan -no-color -input=false -var-file="./${{ env.ENV_VAR }}.tfvars"
-      #- name: Terraform Plan
-      #  run: terraform plan -no-color -input=false -var-file="./${{ github.event.inputs.env_select }}.tfvars"
 
       - name: Terraform Apply
-        run: terraform apply -no-color -auto-approve
-      #- name: Terraform Apply
-      #  run: terraform apply -no-color -auto-approve
+        run: terraform apply -no-color -auto-approve -var-file="./${{ env.ENV_VAR }}.tfvars"
 
       - name: Export terraform outputs
         id: tfout
@@ -85,7 +77,7 @@ jobs:
       #- name: Terraform Destroy
       #  run: terraform destroy -no-color -auto-approve
 
-  Summary:
+  Terraform_Build_Status_Summary:
     needs: [Terraform-Apply]
     runs-on: ubuntu-latest
     steps:
