@@ -49,7 +49,8 @@ jobs:
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
               echo "ENV_VAR=${{ github.event.inputs.env_select }}" >> $GITHUB_ENV
           else
-              echo "ENV_VAR=dev" >> $GITHUB_ENV   #defaults to "dev" for any non workflow_dispatch events
+              echo "ENV_VAR=dev" >> $GITHUB_ENV
+          fi
 
       - name: Terraform Init
         run: terraform init
