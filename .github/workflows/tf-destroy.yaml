@@ -3,6 +3,16 @@ run-name: Running Terraform Destroy by ${{ github.actor }}
 
 on:
   workflow_dispatch:
+    inputs:
+      env_select:
+        description: "Select the environment to configure: "
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
 
 jobs:
   Terraform-Destroy:
@@ -30,10 +40,15 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Destroy
-        run: terraform destroy -no-color -auto-approve -var-file="./dev.tfvars"
+      - name: Terraform workspace new environment and select
+        run: |
+          terraform workspace select "${{ github.event.inputs.env_select }}" 2>/dev/null || terraform workspace new "${{ github.event.inputs.env_select }}"
+          terraform workspace list
 
-  Summary:
+      - name: Terraform Destroy
+        run: terraform destroy -no-color -auto-approve -var-file="./${{ github.event.inputs.env_select }}.tfvars"
+
+  Terraform_Destroy_Status_Summary:
     needs: [Terraform-Destroy]
     runs-on: ubuntu-latest
     steps:
